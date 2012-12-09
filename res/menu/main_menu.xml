@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+	<item
+	    android:id="@+id/menu_searchbus"
+	    android:title="Показать маршрут"
+	    android:icon="@drawable/small_question">
+	</item>
+	
+	<item 
+	    android:id="@+id/menu_addbookmark"
+	    android:title="Добавить закладку"
+	    android:icon="@drawable/small_plus">
+	</item>
+		
+	<item 
+	    android:id="@+id/menu_exit"
+	    android:title="Выход"
+	    android:icon="@drawable/small_exit">
+	</item>    
+
+</menu>
