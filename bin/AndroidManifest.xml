@@ -49,6 +49,11 @@
                 <category android:name="android.intent.category.SAMPLE_CODE" />
             </intent-filter>
         </activity>
+        <service android:name="MyBusService">
+            <intent-filter>
+                <action android:name="com.udav.mybus.MyBusService"/>
+            </intent-filter>
+        </service>
     </application>
 	
 </manifest>

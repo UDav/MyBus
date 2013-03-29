@@ -1,26 +1,28 @@
 package com.udav.mybus;
 
-import java.util.HashMap;
-
 import android.app.Service;
 import android.content.Intent;
 import android.database.Cursor;
+import android.os.Bundle;
 import android.os.IBinder;
 
 public class MyBusService extends Service {
-
+	private String result = "";
+	private Parser parser;
+	private String link;
+	private Intent i;
+	
 	@Override
 	public IBinder onBind(Intent intent) {
 		return null;
 	}
 	
 	public int onStartCommand(Intent intent, int flags, int startId){
-		String result;
 		int command = intent.getIntExtra("command", 0);
-		String link = intent.getStringExtra("link");
-		Intent i = new Intent("path to service");
+		link = intent.getStringExtra("link");
+		i = new Intent("com.sonyericsson.extras.liveview.plugins.sandbox");
 		
-		Parser parser = new Parser(getBaseContext());
+		parser = new Parser(getBaseContext());
 		
 		if (command != 0 ) {
 			Cursor mCursor = DBHelper.getDB(getBaseContext()).query("Bookmark", null, null, null, null, null, null);
@@ -34,33 +36,27 @@ public class MyBusService extends Service {
 		    		counter++;
 		    	} while(mCursor.moveToNext());
 		    }
-			i.putExtra("titleArr", titleArr);
-			i.putExtra("linkArr", linkArr);
-			sendBroadcast(i);
-		} else
-		if (link != null) {
-			result = parser.parseTime(link);
-			i.putExtra("result", result);
-		}
+			Bundle b = new Bundle();
+			b.putStringArray("titleArr", titleArr);
+			b.putStringArray("linkArr", linkArr);
+			b.putString("result", "");
+			i.putExtras(b);
 			
-		/*switch (command) {
-			case 1:
-				Cursor mCursor = DBHelper.getDB(getBaseContext()).query("Bookmark", null, null, null, null, null, null);
-				if (mCursor.moveToFirst() ) {
-			    	do {
-			    		mCursor.getString(mCursor.getColumnIndex("title"));
-			    		link = mCursor.getString(mCursor.getColumnIndex("link"));
-			    	} while(mCursor.moveToNext());
-			    }
-				
-				link = "link";
-				break;
-			case 2:
-				
-				break;
-			default: 
-				break;
-		}*/
+			sendBroadcast(i);
+		} //else
+		if (link != null) {
+			//launch another thread		
+			new Thread() {
+				@Override
+				public void run() {
+					result = parser.parseTime(link);
+					i.putExtra("result", result);
+					sendBroadcast(i);
+					super.run();
+				}
+			}.start();
+		}
+			System.out.println("At application all ok!");
 		return super.onStartCommand(intent, flags, startId);
 	}
 

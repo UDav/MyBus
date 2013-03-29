@@ -41,9 +41,8 @@ public class Parser{
 	 */
 	public int parseAbstractBus() {
 		abstractBus = new ArrayList<String>();
-		Connection connect = Jsoup.connect("http://m.bus55.ru/");
 		try {
-			Document doc = connect.get();
+			Document doc = Jsoup.connect("http://m.bus55.ru/").get();
 			
 			Elements elements = doc.getElementsByAttributeValue("class", "bullet");
 			for (int i=0; i<elements.size(); i++){
@@ -61,11 +60,9 @@ public class Parser{
 	 * parse links to bus
 	 */
 	public void parseBus(int i) {
-		//for (int i=0; i<abstractBus.size(); i++) {
 		int size = 0;
-			Connection connect = Jsoup.connect(abstractBus.get(i));
 			try {
-				Document doc = connect.get();
+				Document doc = Jsoup.connect(abstractBus.get(i)).get();
 			
 				Elements elements = doc.getElementsByAttributeValue("class", "bullet");
 				for (int j=0; j<elements.size(); j++){
@@ -76,7 +73,6 @@ public class Parser{
 										
 					parseBusStation(elements.get(j).select("a").attr("href"), DBHelper.getDB(context).insert("Bus", null, mContentValues));
 				}
-				//BookmarksActivity.pd.incrementProgressBy(1);
 			} catch (Exception e) {
 				System.out.println("Can't connect!");
 				result = "error";
@@ -92,9 +88,9 @@ public class Parser{
 	
 	private void parseBusStation(String link, long busId){
 				Connection connect = null;
-				connect = Jsoup.connect(link);
+				//connect = ;
 				try {
-					Document doc = connect.get();
+					Document doc = Jsoup.connect(link).get();
 
 					String text = doc.select("div[class*=pSide5]").html();
 					String tmpStr [] = text.split("<h2 class=\"grayTitle\">Направление Б:</h2> ");
@@ -136,11 +132,9 @@ public class Parser{
 	 * @return strings text
 	 */
 	public String parseTime(String link) {
-		Connection connect = null;
 		if (isNetworkAvailable()) {
-			connect = Jsoup.connect(link);
 			try {
-				Document doc = connect.get();
+				Document doc = Jsoup.connect(link).get();
 				Elements elements = doc.getElementsByAttributeValue("class",
 						"bullet");
 				for (int i = 0; i < elements.size(); i++) {
